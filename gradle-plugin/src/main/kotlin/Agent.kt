@@ -2,7 +2,9 @@
 
 package com.epam.drill.autotest.gradle
 
-import org.apache.tools.ant.taskdefs.condition.Os
+import com.epam.drill.agent.runner.Configuration
+import com.epam.drill.agent.runner.dynamicLibExtensions
+import com.epam.drill.agent.runner.presetName
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -13,7 +15,6 @@ import org.gradle.kotlin.dsl.maven
 import org.gradle.kotlin.dsl.repositories
 import org.gradle.process.JavaForkOptions
 import org.jetbrains.kotlin.konan.target.Family
-import java.io.File
 import kotlin.reflect.KClass
 
 private const val EXTENSION_NAME = "drill"
@@ -22,7 +23,6 @@ abstract class Agent : Plugin<Project> {
 
     abstract val extensionClass: KClass<out Configuration>
     abstract val taskType: KClass<out JavaForkOptions>
-    abstract val artifactPath: String
 
     private fun TaskContainer.configure() {
 
@@ -47,7 +47,7 @@ abstract class Agent : Plugin<Project> {
 
         afterEvaluate {
             dependencies {
-                agent("$artifactPath-${presetName}:${config.version}@zip")
+                agent("${config.artifactGroup}:${config.artifactId}-${presetName}:${config.version}@zip")
             }
             with(tasks) {
                 configure()
@@ -70,7 +70,8 @@ abstract class Agent : Plugin<Project> {
                     from(zipTree(agent.resolve().first()))
                     into(drillDist)
                 }
-            val dynamicLibExtensions = Family.values().map { it.dynamicSuffix }.distinct()
+
+
 
             config.runtimePath = extractedDir
             config.agentPath = extractedDir.listFiles()?.first { file ->
@@ -82,23 +83,4 @@ abstract class Agent : Plugin<Project> {
 
 private val Project.config: Configuration
     get() = extensions.findByName(EXTENSION_NAME) as Configuration
-
-abstract class Configuration {
-    lateinit var adminHost: String
-    lateinit var agentId: String
-    var adminPort: Int = 8080
-    var version: String = "+"
-    var agentPath: File? = null
-    var runtimePath: File? = null
-    abstract fun toJvmArgs(): String
-}
-
-
-val presetName: String =
-    when {
-        Os.isFamily(Os.FAMILY_MAC) -> "macosX64"
-        Os.isFamily(Os.FAMILY_UNIX) -> "linuxX64"
-        Os.isFamily(Os.FAMILY_WINDOWS) -> "mingwX64"
-        else -> throw RuntimeException("Target ${System.getProperty("os.name")} is not supported")
-    }
 

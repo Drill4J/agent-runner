@@ -13,12 +13,17 @@ dependencies {
     implementation(gradleApi())
     implementation(kotlin("stdlib-jdk8", kotlinVersion))
     implementation(kotlin("gradle-plugin", kotlinVersion))
+    implementation(project(":common"))
 
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
     testImplementation(gradleTestKit())
 }
 
+sourceSets {
+    val main: SourceSet by getting
+    main.java.srcDirs("../common/src/main")
+}
 tasks {
 
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
