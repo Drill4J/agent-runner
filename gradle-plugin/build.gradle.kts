@@ -13,7 +13,6 @@ dependencies {
     implementation(gradleApi())
     implementation(kotlin("stdlib-jdk8", kotlinVersion))
     implementation(kotlin("gradle-plugin", kotlinVersion))
-    implementation(project(":common"))
 
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
