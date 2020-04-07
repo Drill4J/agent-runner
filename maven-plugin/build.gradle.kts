@@ -55,6 +55,7 @@ publishing {
         create<MavenPublication>("drill-maven") {
             groupId = "com.epam.drill.agent.runner"
             artifactId = "maven"
+            artifact(file("target/maven-$version.jar"))
             pom.withXml {
                 asNode().apply {
 
