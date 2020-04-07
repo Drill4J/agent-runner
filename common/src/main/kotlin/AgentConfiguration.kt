@@ -12,13 +12,13 @@ open class AgentConfiguration : Configuration() {
     override val artifactId: String = "autoTestAgent"
 
     override fun toJvmArgs(): String {
-        val serviceGroupId = if (groupId != null) "serviceGroupId=$groupId," else ""
-        val agentId = if (agentId != null) agentId else ""
+        val serviceGroupId = if (groupId != null) "serviceGroup=$groupId," else ""
+        val agentId = if (agentId != null) "agentId=$agentId," else ""
         return "-agentpath:${agentPath}=" +
                 "runtimePath=${runtimePath}," +
                 "adminHost=$adminHost," +
                 "adminPort=$adminPort," +
-                "agentId=$agentId," +
+                agentId +
                 "pluginId=$pluginId," +
                 serviceGroupId +
                 "trace=$trace," +
