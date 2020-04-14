@@ -3,7 +3,6 @@ package com.epam.drill.agent.runner
 open class AppAgentConfiguration : Configuration() {
     var buildVersion: String? = null
     var instanceId: String? = null
-    var groupId: String? = null
     var type: String? = null
     override val artifactGroup: String = "com.epam.drill"
     override val artifactId: String = "drill-agent"
