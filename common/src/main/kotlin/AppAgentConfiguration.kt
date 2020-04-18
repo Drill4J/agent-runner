@@ -1,15 +1,12 @@
 package com.epam.drill.agent.runner
 
-enum class ApplicationType {
-    WAR, EAR
-}
-
 open class AppAgentConfiguration : Configuration() {
-    var buildVersion: String? = null
-    var instanceId: String? = null
-    var type: ApplicationType? = null
     override val artifactGroup: String = "com.epam.drill"
     override val artifactId: String = "drill-agent"
+
+    var buildVersion: String? = null
+    var instanceId: String? = null
+    var webAppNames: List<String>? = null
 
     override fun toJvmArgs(): String {
         val map = mutableMapOf<String, Any?>()
@@ -17,13 +14,14 @@ open class AppAgentConfiguration : Configuration() {
             mapOf(
                 "drillInstallationDir" to runtimePath,
                 "adminAddress" to "$adminHost:$adminPort",
-                "agentId" to agentId
+                "agentId" to agentId,
+                "logLevel" to logLevel.name
             )
         )
         if (buildVersion != null) map.putAll(mutableMapOf("buildVersion" to buildVersion))
         if (instanceId != null) map.putAll(mutableMapOf("instanceId" to instanceId))
         if (groupId != null) map.putAll(mutableMapOf("groupId" to groupId))
-        if (type != null) map.putAll(mutableMapOf("type" to type!!.name))
+        if (webAppNames != null) map.putAll(mutableMapOf("webAppNames" to webAppNames!!.joinToString(separator = ":")))
 
         return "-agentpath:${agentPath}=" + map.map { (k, v) -> "$k=$v" }.joinToString(",")
     }

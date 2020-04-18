@@ -10,6 +10,7 @@ abstract class Configuration {
     var version: String = "+"
     var agentPath: File? = null
     var runtimePath: File? = null
+    var logLevel: LogLevels = LogLevels.ERROR
     abstract val artifactGroup: String
     abstract val artifactId: String
     abstract fun toJvmArgs(): String
