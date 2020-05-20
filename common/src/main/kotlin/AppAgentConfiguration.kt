@@ -22,6 +22,10 @@ open class AppAgentConfiguration : Configuration() {
         if (instanceId != null) map.putAll(mutableMapOf("instanceId" to instanceId))
         if (groupId != null) map.putAll(mutableMapOf("groupId" to groupId))
         if (webAppNames != null) map.putAll(mutableMapOf("webAppNames" to webAppNames!!.joinToString(separator = ":")))
+        if (logFile != null) map.putAll(mutableMapOf("logFile" to logFile!!.absolutePath))
+        if (additionalParams != null) {
+            map.putAll(additionalParams!!)
+        }
 
         return "-agentpath:${agentPath}=" + map.map { (k, v) -> "$k=$v" }.joinToString(",")
     }

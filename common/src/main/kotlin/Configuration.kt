@@ -11,6 +11,8 @@ abstract class Configuration {
     var agentPath: File? = null
     var runtimePath: File? = null
     var logLevel: LogLevels = LogLevels.ERROR
+    var logFile: File? = null
+    var additionalParams: Map<String, String>? = null
     abstract val artifactGroup: String
     abstract val artifactId: String
     abstract fun toJvmArgs(): String
