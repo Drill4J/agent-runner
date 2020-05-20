@@ -1,9 +1,11 @@
 import java.lang.System.out
 
 plugins {
-    kotlin("jvm") version ("1.3.70")
+    kotlin("jvm")
     `maven-publish`
 }
+
+val kotlinVersion: String by extra
 
 repositories {
     mavenCentral()
@@ -20,7 +22,6 @@ dependencies {
 }
 
 tasks {
-
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions.jvmTarget = "1.8"
     }
@@ -30,27 +31,12 @@ val install by tasks.creating(Exec::class) {
     workingDir(project.projectDir)
     val isWindows = System.getProperty("os.name").toLowerCase().indexOf("windows") >= 0
     val args = if (isWindows) arrayOf("cmd", "/c", "mvnw.cmd") else arrayOf("sh", "./mvnw")
-    commandLine(*args, "install")
+    commandLine(*args, "install", "-Ddrill.plugin.version=$version", "-Dkotlin.version=$kotlinVersion")
     standardOutput = out
 }
 
 
 publishing {
-    repositories {
-        maven {
-            url = uri("http://oss.jfrog.org/oss-release-local")
-            credentials {
-                username =
-                    if (project.hasProperty("bintrayUser"))
-                        project.property("bintrayUser").toString()
-                    else System.getenv("BINTRAY_USER")
-                password =
-                    if (project.hasProperty("bintrayApiKey"))
-                        project.property("bintrayApiKey").toString()
-                    else System.getenv("BINTRAY_API_KEY")
-            }
-        }
-    }
     publications {
         create<MavenPublication>("drill-maven") {
             groupId = "com.epam.drill.agent.runner"
@@ -63,7 +49,7 @@ publishing {
                         appendNode("dependency").apply {
                             appendNode("groupId", "org.jetbrains.kotlin")
                             appendNode("artifactId", "kotlin-stdlib")
-                            appendNode("version", "1.3.71")
+                            appendNode("version", kotlinVersion)
                         }
                     }
                 }
