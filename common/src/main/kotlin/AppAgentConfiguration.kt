@@ -8,26 +8,12 @@ open class AppAgentConfiguration : Configuration() {
     var instanceId: String? = null
     var webAppNames: List<String>? = null
 
-    override fun toJvmArgs(): String {
-        val map = mutableMapOf<String, Any?>()
-        map.putAll(
-            mapOf(
-                "drillInstallationDir" to runtimePath,
-                "adminAddress" to "$adminHost:$adminPort",
-                "agentId" to agentId,
-                "logLevel" to logLevel.name
-            )
-        )
-        if (buildVersion != null) map.putAll(mutableMapOf("buildVersion" to buildVersion))
-        if (instanceId != null) map.putAll(mutableMapOf("instanceId" to instanceId))
-        if (groupId != null) map.putAll(mutableMapOf("groupId" to groupId))
-        if (webAppNames != null) map.putAll(mutableMapOf("webAppNames" to webAppNames!!.joinToString(separator = ":")))
-        if (logFile != null) map.putAll(mutableMapOf("logFile" to logFile!!.absolutePath))
-        if (additionalParams != null) {
-            map.putAll(additionalParams!!)
+    override fun jvmArgs(): Map<String, String> {
+        return mutableMapOf<String, String>().apply {
+            if (buildVersion != null) this["buildVersion"] = buildVersion!!
+            if (instanceId != null) this["instanceId"] = instanceId!!
+            if (webAppNames != null) this["webAppNames"] = webAppNames!!.joinToString(separator = ":")
         }
-
-        return "-agentpath:${agentPath}=" + map.map { (k, v) -> "$k=$v" }.joinToString(",")
     }
 
 }

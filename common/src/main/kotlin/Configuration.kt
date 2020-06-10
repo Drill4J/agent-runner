@@ -15,5 +15,21 @@ abstract class Configuration {
     var additionalParams: Map<String, String>? = null
     abstract val artifactGroup: String
     abstract val artifactId: String
-    abstract fun toJvmArgs(): String
+    fun toJvmArgs(): String {
+        val args = mutableMapOf<String, Any?>().apply {
+            this["drillInstallationDir"] = runtimePath
+            this["adminAddress"] = "$adminHost:$adminPort"
+            this["agentId"] = agentId!!
+            this["logLevel"] = logLevel.name
+            if (groupId != null) this["groupId"] = groupId!!
+            if (logFile != null) this["logFile"] = logFile!!.absolutePath
+            if (additionalParams != null) {
+                this.putAll(additionalParams!!)
+            }
+            putAll(jvmArgs())
+        }
+        return "-agentpath:${agentPath}=" + args.map { (k, v) -> "$k=$v" }.joinToString(",")
+    }
+
+    abstract fun jvmArgs(): Map<String, String>
 }

@@ -14,7 +14,6 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.maven
 import org.gradle.kotlin.dsl.repositories
 import org.gradle.process.JavaForkOptions
-import org.jetbrains.kotlin.konan.target.Family
 import kotlin.reflect.KClass
 
 private const val EXTENSION_NAME = "drill"
