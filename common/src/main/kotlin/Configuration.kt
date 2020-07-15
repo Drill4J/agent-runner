@@ -13,13 +13,14 @@ abstract class Configuration {
     var logLevel: LogLevels = LogLevels.ERROR
     var logFile: File? = null
     var additionalParams: Map<String, String>? = null
+    var jvmArgs: Set<String> = mutableSetOf()
     abstract val artifactGroup: String
     abstract val artifactId: String
-    fun toJvmArgs(): String {
+    fun toJvmArgs(): List<String> {
         val args = mutableMapOf<String, Any?>().apply {
             this["drillInstallationDir"] = runtimePath
             this["adminAddress"] = "$adminHost:$adminPort"
-            this["agentId"] = agentId!!
+            this["agentId"] = agentId
             this["logLevel"] = logLevel.name
             if (groupId != null) this["groupId"] = groupId!!
             if (logFile != null) this["logFile"] = logFile!!.absolutePath
@@ -28,7 +29,7 @@ abstract class Configuration {
             }
             putAll(jvmArgs())
         }
-        return "-agentpath:${agentPath}=" + args.map { (k, v) -> "$k=$v" }.joinToString(",")
+        return jvmArgs.toList() + ("-agentpath:${agentPath}=" + args.map { (k, v) -> "$k=$v" }.joinToString(","))
     }
 
     abstract fun jvmArgs(): Map<String, String>

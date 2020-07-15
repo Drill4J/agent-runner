@@ -28,7 +28,7 @@ abstract class AgentMojo : AbstractMojo() {
             println("$x: $y")
         }
         val oldValue = projectProperties.getProperty(name)
-        val newValue: String = "${oldValue ?: ""} ${config.toJvmArgs()}".trim()
+        val newValue: String = "${oldValue ?: ""} ${config.toJvmArgs().joinToString(separator = " ")}".trim()
         log.info("$name set to $newValue")
         projectProperties.setProperty(name, newValue)
     }
@@ -63,6 +63,7 @@ abstract class AgentMojo : AbstractMojo() {
             }
         if (ac.runtimePath == null)
             ac.runtimePath = extractedDir
+        println("!!!! ${ac.toJvmArgs()}")
     }
 
     private fun unzip(file: File, dir: File) {
