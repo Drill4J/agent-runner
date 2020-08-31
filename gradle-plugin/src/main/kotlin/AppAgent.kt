@@ -10,6 +10,6 @@ import kotlin.reflect.KClass
 
 class AppAgent : Agent() {
     override val extensionClass: KClass<out Configuration> = AppAgentConfiguration::class
-    override val taskType: KClass<out JavaForkOptions> = JavaExec::class
+    override val taskType: Set<KClass<out JavaForkOptions>> = setOf(JavaExec::class)
 }
 

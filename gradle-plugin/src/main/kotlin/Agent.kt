@@ -21,16 +21,18 @@ private const val EXTENSION_NAME = "drill"
 abstract class Agent : Plugin<Project> {
 
     abstract val extensionClass: KClass<out Configuration>
-    abstract val taskType: KClass<out JavaForkOptions>
+    abstract val taskType: Set<KClass<out JavaForkOptions>>
 
     private fun TaskContainer.configure() {
-
-        filterIsInstance(taskType.java).forEach {
+        filter { task -> taskType.any {  it.java.isInstance(task)} }.map { it as JavaForkOptions}.forEach {
+            println("Task ${(it as Task).name} is modified by Drill")
             with(it) {
                 (it as Task).doFirst {
                     with(project) {
                         prepare()
-                        jvmArgs(config.toJvmArgs())
+                            val toJvmArgs: List<String> = config.toJvmArgs()
+                            println("Drill agent line: $toJvmArgs")
+                            it.setJvmArgs(toJvmArgs.asIterable())
                     }
                 }
             }
