@@ -8,14 +8,16 @@ repositories {
     mavenCentral()
 }
 
+val kotlinVersion: String by extra
+
 dependencies {
     implementation(gradleApi())
-    implementation(kotlin("stdlib-jdk8"))
-    implementation(kotlin("gradle-plugin"))
+    implementation(kotlin("stdlib-jdk8", kotlinVersion))
+    implementation(kotlin("gradle-plugin", kotlinVersion))
     compileOnly(project(":common"))
 
-    testImplementation(kotlin("test"))
-    testImplementation(kotlin("test-junit"))
+    testImplementation(kotlin("test", kotlinVersion))
+    testImplementation(kotlin("test-junit", kotlinVersion))
     testImplementation(gradleTestKit())
 }
 

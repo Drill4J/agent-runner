@@ -7,7 +7,8 @@ plugins {
 repositories {
     mavenCentral()
 }
+val kotlinVersion: String by extra
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib")
+    implementation(kotlin("stdlib", kotlinVersion))
 }

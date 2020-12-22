@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     implementation(project(":common"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
     implementation("org.apache.maven:maven-core:3.5.3")
     implementation("org.apache.maven:maven-plugin-api:3.5.3")
     implementation("org.apache.maven.plugin-tools:maven-plugin-annotations:3.5")
