@@ -24,15 +24,15 @@ abstract class Agent : Plugin<Project> {
     abstract val taskType: Set<KClass<out JavaForkOptions>>
 
     private fun TaskContainer.configure() {
-        filter { task -> taskType.any {  it.java.isInstance(task)} }.map { it as JavaForkOptions}.forEach {
+        filter { task -> taskType.any { it.java.isInstance(task) } }.map { it as JavaForkOptions }.forEach {
             println("Task ${(it as Task).name} is modified by Drill")
             with(it) {
                 (it as Task).doFirst {
                     with(project) {
                         prepare()
-                            val toJvmArgs: List<String> = config.toJvmArgs()
-                            println("Drill agent line: $toJvmArgs")
-                            it.setJvmArgs(toJvmArgs.asIterable())
+                        val toJvmArgs: List<String> = config.toJvmArgs()
+                        println("Drill agent line: $toJvmArgs")
+                        it.setJvmArgs(toJvmArgs.asIterable())
                     }
                 }
             }
@@ -54,7 +54,6 @@ abstract class Agent : Plugin<Project> {
                 configure()
             }
         }
-        Unit
     }
 
     private fun Project.prepare() {

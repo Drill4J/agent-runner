@@ -34,36 +34,35 @@ abstract class AgentMojo : AbstractMojo() {
     }
 
     private fun prepareAgent(ac: Configuration) {
-        val dir = File(project.build.outputDirectory).parentFile
-            .resolve("drill")
-            .apply { mkdirs() }
-        if (ac.version == "+") {
-            ac.version =
-                URL("$ARTIFACTORY_URL/api/search/latestVersion?g=${ac.artifactGroup}&a=${ac.artifactId}-$presetName&v=+&repos=$REPOSITORY_NAME").readText()
-                    .lines().first()
-            println("version is ${ac.version}")
+        if (ac.agentPath == null && ac.runtimePath == null) {
+            val dir = File(project.build.outputDirectory).parentFile
+                .resolve("drill")
+                .apply { mkdirs() }
+            if (ac.version == "+") {
+                val latestVersion = "$ARTIFACTORY_URL/api/search/latestVersion?" +
+                        "g=${ac.artifactGroup}&a=${ac.artifactId}-$presetName&v=+&repos=$REPOSITORY_NAME"
+                ac.version = URL(latestVersion).readText().lines().first()
+                println("version is ${ac.version}")
 
-        }
-        val artName = "${ac.artifactId}-$presetName-${ac.version}"
-        val artFileName = "$artName.zip"
-        if (!dir.resolve("$presetName-${ac.version}").exists()) {
-            val groupToUrlPath = ac.artifactGroup.replace(".", "/")
-            val url =
-                URL("$ARTIFACTORY_URL/list/$REPOSITORY_NAME/$groupToUrlPath/${ac.artifactId}-$presetName/${ac.version}/$artFileName")
-                    .apply { println("URL is $this") }
-            val file = dir.resolve(artFileName).apply { createNewFile() }
-            file.writeBytes(url.openStream().readBytes())
-            unzip(file, dir)
-        }
+            }
+            val artName = "${ac.artifactId}-$presetName-${ac.version}"
+            val artFileName = "$artName.zip"
+            if (!dir.resolve("$presetName-${ac.version}").exists()) {
+                val groupToUrlPath = ac.artifactGroup.replace(".", "/")
+                val agent = "$ARTIFACTORY_URL/list/$REPOSITORY_NAME/$groupToUrlPath/" +
+                        "${ac.artifactId}-$presetName/${ac.version}/$artFileName"
+                val url = URL(agent).apply { println("URL is $this") }
+                val file = dir.resolve(artFileName).apply { createNewFile() }
+                file.writeBytes(url.openStream().readBytes())
+                unzip(file, dir)
+            }
 
-        val extractedDir = dir.resolve("$presetName-${ac.version}")
-        if (ac.agentPath == null)
+            val extractedDir = dir.resolve("$presetName-${ac.version}")
             ac.agentPath = extractedDir.listFiles()?.first { file ->
                 dynamicLibExtensions.any { it == file.extension }
             }
-        if (ac.runtimePath == null)
             ac.runtimePath = extractedDir
-        println("!!!! ${ac.toJvmArgs()}")
+        }
     }
 
     private fun unzip(file: File, dir: File) {
