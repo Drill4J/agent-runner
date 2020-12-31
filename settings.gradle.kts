@@ -10,6 +10,5 @@ pluginManagement {
     val kotlinVersion: String by extra
     plugins {
         kotlin("jvm") version kotlinVersion
-        kotlin("plugin.serialization") version kotlinVersion
     }
 }

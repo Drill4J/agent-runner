@@ -9,14 +9,14 @@ repositories {
 }
 
 dependencies {
-    implementation(gradleApi())
-    implementation(kotlin("stdlib-jdk8"))
-    implementation(kotlin("gradle-plugin"))
+    compileOnly(gradleApi())
+    compileOnly(kotlin("stdlib-jdk8"))
+    compileOnly(kotlin("gradle-plugin"))
     compileOnly(project(":common"))
 
-    testImplementation(kotlin("test"))
-    testImplementation(kotlin("test-junit"))
-    testImplementation(gradleTestKit())
+    testCompileOnly(kotlin("test"))
+    testCompileOnly(kotlin("test-junit"))
+    testCompileOnly(gradleTestKit())
 }
 
 sourceSets {
