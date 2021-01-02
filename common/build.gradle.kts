@@ -1,13 +1,16 @@
 plugins {
     kotlin("jvm")
-    maven
     `maven-publish`
 }
 
-repositories {
-    mavenCentral()
+dependencies {
+    compileOnly(kotlin("stdlib-jdk8"))
 }
 
-dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib")
+publishing {
+    publications {
+        create<MavenPublication>("jvm") {
+            from(components["java"])
+        }
+    }
 }

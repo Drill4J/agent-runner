@@ -4,30 +4,11 @@ plugins {
     `maven-publish`
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    implementation(gradleApi())
-    implementation(kotlin("stdlib-jdk8"))
-    implementation(kotlin("gradle-plugin"))
-    compileOnly(project(":common"))
-
-    testImplementation(kotlin("test"))
-    testImplementation(kotlin("test-junit"))
-    testImplementation(gradleTestKit())
-}
-
-sourceSets {
-    val main: SourceSet by getting
-    main.java.srcDirs("../common/src/main")
-}
-tasks {
-
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.8"
-    }
+    compileOnly(gradleApi())
+    compileOnly((kotlin("stdlib-jdk8")))
+    compileOnly((kotlin("gradle-plugin")))
+    implementation(project(":common"))
 }
 
 gradlePlugin {
@@ -39,6 +20,14 @@ gradlePlugin {
         create("app") {
             id = "$group.app"
             implementationClass = "com.epam.drill.autotest.gradle.AppAgent"
+        }
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("jvm") {
+            from(components["java"])
         }
     }
 }

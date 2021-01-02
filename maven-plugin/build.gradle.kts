@@ -7,13 +7,9 @@ plugins {
 
 val kotlinVersion: String by extra
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation(project(":common"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib")
+    implementation(kotlin("stdlib"))
     implementation("org.apache.maven:maven-core:3.5.3")
     implementation("org.apache.maven:maven-plugin-api:3.5.3")
     implementation("org.apache.maven.plugin-tools:maven-plugin-annotations:3.5")
@@ -21,20 +17,13 @@ dependencies {
     implementation("org.apache.maven.plugins:maven-surefire-plugin:2.22.1")
 }
 
-tasks {
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-}
-
-val install by tasks.creating(Exec::class) {
+val install by tasks.registering(Exec::class) {
     workingDir(project.projectDir)
     val isWindows = System.getProperty("os.name").toLowerCase().indexOf("windows") >= 0
     val args = if (isWindows) arrayOf("cmd", "/c", "mvnw.cmd") else arrayOf("sh", "./mvnw")
     commandLine(*args, "install", "-Ddrill.plugin.version=$version", "-Dkotlin.version=$kotlinVersion")
     standardOutput = out
 }
-
 
 publishing {
     publications {
@@ -58,11 +47,11 @@ publishing {
     }
 }
 tasks {
-    "publish"{
-        dependsOn("install")
+    publish {
+        dependsOn(install)
     }
 
-    "publishToMavenLocal"{
-        dependsOn("install")
+    publishToMavenLocal {
+        dependsOn(install)
     }
 }
