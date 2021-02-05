@@ -5,8 +5,10 @@ apply(from = "$scriptUrl/maven-repo.settings.gradle.kts")
 
 pluginManagement {
     val kotlinVersion: String by extra
+    val licenseVersion: String by extra
     plugins {
         kotlin("jvm") version kotlinVersion
+        id("com.github.hierynomus.license") version licenseVersion
     }
 }
 
